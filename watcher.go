@@ -2,7 +2,6 @@ package braza
 
 import (
 	"bytes"
-	"fmt"
 	"io/fs"
 	"os"
 	"os/exec"
@@ -47,8 +46,7 @@ func fileWatcher(reboot chan bool) {
 }
 
 func selfReboot() {
-	fmt.Println()
-	l.warn.Print("Changes detected, reloading server...\n\n")
+	l.warn.Print("\nChanges detected, reloading server...\n\n")
 	self, _ := os.Getwd()
 	for _, app := range mapStackApps {
 		app.Srv.Close()

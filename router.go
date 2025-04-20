@@ -117,7 +117,6 @@ func (r *Router) parse(servername string) {
 
 func (r *Router) match(ctx *Ctx) bool {
 	rq := ctx.Request
-	fmt.Println(">> ", r.subdomainRegex)
 	if len(r.subdomainRegex) > 0 {
 		subSplit := strings.Split(rq.Host, ".")
 		if len(subSplit) != len(r.subdomainRegex) {
