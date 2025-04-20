@@ -5,15 +5,13 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"maps"
 	"net"
 	"net/http"
 	"os"
 	"path/filepath"
 	"slices"
 	"strings"
-
-	"github.com/google/uuid"
-	"github.com/joho/godotenv"
 )
 
 var (
@@ -179,25 +177,6 @@ func (app *App) setFlags() {
 	}
 }
 
-func (app *App) loadEnvsfromFile() {
-	app.Env = allowEnv[app.Env]
-	var envfn string
-	if app.Env == "development" {
-		if app.EnvFile != "" {
-			envfn = app.EnvFile
-		}
-	} else if app.Env == "test" {
-		if app.EnvFileTest != "" {
-			envfn = app.EnvFileTest
-		}
-	} else if app.Env == "production" {
-		if app.EnvFileProd != "" {
-			envfn = app.EnvFileProd
-		}
-	}
-	godotenv.Load(envfn)
-}
-
 func (app *App) setEnv() {
 	if e := os.Getenv("ENV"); e != "" {
 		app.Env = e
@@ -239,11 +218,9 @@ func (app *App) logStarterListener() {
 		}
 		l.info.Printf("          listening on: http://%s:%s", addr, port)
 	}
-	// if envDev {
 	if app.Servername != "" {
 		l.info.Printf("          setting servername: '%s'", app.Servername)
 	}
-	// }
 }
 
 /*
@@ -268,6 +245,9 @@ func (app *App) parseSrvApp(addr string) {
 
 func runSrv(app *App, privKey, pubKey string, host ...string) (err error) {
 	app.Build(host...)
+	if listRouteSch != "" {
+		showRouteSchema(app, listRouteSch)
+	}
 	var reboot = make(chan bool)
 	var srvErr = make(chan error)
 
@@ -319,8 +299,6 @@ APP methods
 
 // Parse the router and your routes
 func (app *App) parseApp() {
-	app.uuid = uuid.NewString()
-	app.setEnv()
 	app.checkConfig()
 	if app.Servername != "" {
 
@@ -393,9 +371,7 @@ func (app *App) parseApp() {
 	}
 	for _, router := range app.routers {
 		router.parse(app.Servername)
-		for n, r := range router.routesByName {
-			app.routesByName[n] = r
-		}
+		maps.Copy(app.routesByName, router.routesByName)
 	}
 }
 
@@ -465,7 +441,9 @@ example:
 	}
 */
 func (app *App) Build(addr ...string) {
-	app.loadEnvsfromFile()
+	app.setEnv()
+
+	app.Env = allowEnv[app.Env]
 	l = newLogger(app.LogFile)
 	app.parseApp()
 	app.built = true
@@ -515,8 +493,6 @@ func (app *App) match(ctx *Ctx) {
 			return
 		}
 	}
-	fmt.Println(rq.Host)
-	fmt.Println(rq.URL.Path)
 
 	mi := ctx.MatchInfo
 	if mi.MethodNotAllowed != nil {

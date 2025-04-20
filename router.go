@@ -34,6 +34,7 @@ type Router struct {
 }
 
 func (r *Router) compileSub() {
+	r.subdomainRegex = make([]*regexp.Regexp, 0) // reset
 	sub := r.Subdomain
 	subSplit := strings.Split(sub, ".")
 	for _, str := range subSplit {
@@ -83,9 +84,8 @@ func (r *Router) parseRoute(route *Route) {
 }
 
 func (r *Router) parse(servername string) {
-	if r.routesByName == nil {
-		r.routesByName = map[string]*Route{}
-	}
+	r.routesByName = map[string]*Route{}         // reset
+	r.subdomainRegex = make([]*regexp.Regexp, 0) // reset
 
 	if r.Name == "" && !r.main {
 		panic(fmt.Errorf("the routers must be named"))
@@ -96,6 +96,7 @@ func (r *Router) parse(servername string) {
 		}
 		r.compileSub()
 	}
+
 	if servername != "" {
 		srvSplit := strings.Split(servername, ".")
 		for _, s := range srvSplit {
@@ -116,6 +117,7 @@ func (r *Router) parse(servername string) {
 
 func (r *Router) match(ctx *Ctx) bool {
 	rq := ctx.Request
+	fmt.Println(">> ", r.subdomainRegex)
 	if len(r.subdomainRegex) > 0 {
 		subSplit := strings.Split(rq.Host, ".")
 		if len(subSplit) != len(r.subdomainRegex) {

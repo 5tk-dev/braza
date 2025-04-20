@@ -132,8 +132,10 @@ type Route struct {
 
 func (r *Route) compileUrl() {
 	uri := r.Url
+	r.urlRegex = make([]*regexp.Regexp, 0) // reset
 	isPrefix := false
 	r.hasSufix = strings.HasSuffix(r.simpleUrl, "/")
+
 	if uri != "" && uri != "/" {
 		uri = strings.TrimPrefix(strings.TrimSuffix(uri, "/"), "/")
 		strs := strings.Split(uri, "/")

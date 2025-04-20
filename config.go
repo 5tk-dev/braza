@@ -46,9 +46,6 @@ type Config struct {
 	DisableStatic           bool             // disable static endpoint for serving static files (default false)
 	Silent                  bool             // don't print logs (default false)
 	LogFile                 string           // save log info in file (default '')
-	EnvFile                 string           // .env
-	EnvFileTest             string           // .env
-	EnvFileProd             string           // .env
 	DisableFileWatcher      bool             // disable autoreload in dev mode (default false)
 
 	SessionExpires          time.Duration `validate:"-"` // (default 30 minutes)

@@ -45,16 +45,7 @@ func TestConfigDevSetupFromJson(t *testing.T) {
 		t.Errorf("config.Silent %v, want true", c.Silent)
 	}
 	if c.LogFile != "src/logs/server.log" {
-		t.Errorf("config.EnvFile %q, want \"src/logs/server.log\"", c.EnvFile)
-	}
-	if c.EnvFile != "src/.env" {
-		t.Errorf("config.EnvFile %q, want \"src/.env\"", c.EnvFile)
-	}
-	if c.EnvFileTest != "src/.env.test" {
-		t.Errorf("config.EnvFileTest %q, want \"src/.env.test\"", c.EnvFileTest)
-	}
-	if c.EnvFileProd != "src/.env.prod" {
-		t.Errorf("config.EnvFileProd %q, want \"src/.env.prod\"", c.EnvFileTest)
+		t.Errorf("config.EnvFile %q, want \"src/logs/server.log\"", c.LogFile)
 	}
 	if !c.DisableFileWatcher {
 		t.Errorf("config.DisableFileWatcher %v, want true", c.DisableFileWatcher)
@@ -103,16 +94,7 @@ func TestConfigDevSetupFromYml(t *testing.T) {
 		t.Errorf("config.Silent %v, want true", c.Silent)
 	}
 	if c.LogFile != "src/logs/server.log" {
-		t.Errorf("config.EnvFile %q, want \"src/logs/server.log\"", c.EnvFile)
-	}
-	if c.EnvFile != "src/.env" {
-		t.Errorf("config.EnvFile %q, want \"src/.env\"", c.EnvFile)
-	}
-	if c.EnvFileTest != "src/.env.test" {
-		t.Errorf("config.EnvFileTest %q, want \"src/.env.test\"", c.EnvFileTest)
-	}
-	if c.EnvFileProd != "src/.env.prod" {
-		t.Errorf("config.EnvFileProd %q, want \"src/.env.prod\"", c.EnvFileTest)
+		t.Errorf("config.EnvFile %q, want \"src/logs/server.log\"", c.LogFile)
 	}
 	if !c.DisableFileWatcher {
 		t.Errorf("config.DisableFileWatcher %v, want true", c.DisableFileWatcher)
