@@ -31,7 +31,7 @@ var (
 		"prod":       "production",
 		"production": "production",
 	}
-	l            = newLogger("")
+	l            *logger
 	listenAll    bool
 	localAddress = getOutboundIP()
 	mapStackApps = map[string]*App{}
@@ -61,11 +61,7 @@ Create a new app with a default settings
 	app.Listen()
 */
 func NewApp(cfg *Config) *App {
-	dfn := ".env"
-	if cfg != nil && cfg.DotenvFileName != "" {
-		dfn = cfg.DotenvFileName
-	}
-	godotenv.Load(dfn)
+
 	router := NewRouter("")
 	router.main = true
 	c := &Config{}
@@ -153,9 +149,6 @@ func (app *App) setFlags() {
 		flag.Parse()
 	}
 
-	if e, ok := allowEnv[env]; env != "" && ok {
-		app.Env = e
-	}
 	if app.Srv == nil {
 		app.Srv = &http.Server{}
 	}
@@ -184,6 +177,25 @@ func (app *App) setFlags() {
 	if listRouteSch != "" {
 		showRouteSchema(app, listRouteSch)
 	}
+}
+
+func (app *App) loadEnvsfromFile() {
+	app.Env = allowEnv[app.Env]
+	var envfn string
+	if app.Env == "development" {
+		if app.EnvFile != "" {
+			envfn = app.EnvFile
+		}
+	} else if app.Env == "test" {
+		if app.EnvFileTest != "" {
+			envfn = app.EnvFileTest
+		}
+	} else if app.Env == "production" {
+		if app.EnvFileProd != "" {
+			envfn = app.EnvFileProd
+		}
+	}
+	godotenv.Load(envfn)
 }
 
 func (app *App) setEnv() {
@@ -386,7 +398,6 @@ func (app *App) parseApp() {
 			app.routesByName[n] = r
 		}
 	}
-	app.built = true
 }
 
 /*
@@ -455,16 +466,10 @@ example:
 	}
 */
 func (app *App) Build(addr ...string) {
-	envfn := app.DotenvFileName
-	if envfn == "" {
-		envfn = ".env"
-	}
-	godotenv.Load(envfn)
-	if app.built {
-		return
-	}
-	app.parseApp()
+	app.loadEnvsfromFile()
 	l = newLogger(app.LogFile)
+	app.parseApp()
+	app.built = true
 
 	var address = ":5000"
 	if len(addr) > 0 {

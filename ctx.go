@@ -164,3 +164,22 @@ func (ctx *Ctx) Next() {
 func (ctx *Ctx) UrlFor(name string, external bool, args ...string) string {
 	return ctx.App.UrlFor(name, external, args...)
 }
+
+func CtxForTests(app *App, rq *http.Request) *Ctx {
+	ctx := &Ctx{
+		App:    app,
+		Global: map[string]any{},
+		Session: &Session{
+			del:    []string{},
+			claims: jwt.MapClaims{},
+		},
+		MatchInfo: &MatchInfo{},
+	}
+
+	ctx.Request = NewRequest(rq, ctx)
+	ctx.Response = NewResponseForTest(ctx)
+
+	c := context.Background()
+	ctx.backCtx = context.WithValue(c, abortCode(1), nil)
+	return ctx
+}

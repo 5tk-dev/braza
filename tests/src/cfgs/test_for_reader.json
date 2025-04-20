@@ -1,0 +1,18 @@
+{
+    "Env":"dev",
+    "Silent":true,
+    "LogFile":"src/logs/server.log",
+    "EnvFile":"src/.env",
+    "EnvFileTest":"src/.env.test",
+    "EnvFileProd":"src/.env.prod",
+    "SecretKey":"******",
+    "Servername":"localhost",
+    "StaticFolder":"src/front/assets/",
+    "DisableStatic":true,
+    "StaticUrlPath":"assets/",
+    "TemplateFolder":"src/front/html/",
+    "ListeningInTLS":true,
+    "DisableFileWatcher":true,
+    "DisableParseFormBody":true,
+    "DisableTemplateReloader":true
+}

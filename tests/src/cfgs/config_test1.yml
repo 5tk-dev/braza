@@ -1,0 +1,8 @@
+LogFile: "src/logs/server.log"
+EnvFileTest: "src/envs/.env.test1"
+EnvFile: "src/envs/.env.dev1"
+EnvFileProd: "src/envs/.env.prod1"
+SecretKey: "******"
+Servername: "localhost"
+DisableStatic: true
+TemplateFolder: "src/front/html/"

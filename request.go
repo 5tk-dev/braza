@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"encoding/xml"
+	"fmt"
 	"io"
 	"mime"
 	"mime/multipart"
@@ -60,7 +61,6 @@ func NewRequest(req *http.Request, ctx *Ctx) *Request {
 
 		Header: req.Header,
 	}
-
 	if host, port, err := net.SplitHostPort(req.Host); err == nil {
 		rq.Host = host
 		rq.Port = port
@@ -70,6 +70,8 @@ func NewRequest(req *http.Request, ctx *Ctx) *Request {
 	} else {
 		rq.Host = req.Host
 	}
+	fmt.Println(rq.Host)
+	fmt.Println(rq.Port)
 
 	return rq
 }

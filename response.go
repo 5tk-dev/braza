@@ -32,6 +32,15 @@ func NewResponse(wr http.ResponseWriter, ctx *Ctx) *Response {
 	}
 }
 
+func NewResponseForTest(ctx *Ctx) *Response {
+	return &Response{
+		Buffer:     bytes.NewBufferString(""),
+		ctx:        ctx,
+		header:     http.Header{},
+		StatusCode: 200,
+	}
+}
+
 type Response struct {
 	*bytes.Buffer
 	header     http.Header
