@@ -69,8 +69,10 @@ func NewRequest(req *http.Request, ctx *Ctx) *Request {
 		}
 	} else {
 		rq.Host = req.Host
+		rq.Port = "80"
 	}
 	fmt.Println(rq.Host)
+	fmt.Println(req.URL.Scheme)
 	fmt.Println(rq.Port)
 
 	return rq
