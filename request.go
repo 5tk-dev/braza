@@ -13,6 +13,8 @@ import (
 	"net/url"
 	"strings"
 
+	"maps"
+
 	"github.com/gorilla/websocket"
 	"gopkg.in/yaml.v2"
 )
@@ -121,9 +123,7 @@ func (r *Request) parseHeaders() {
 	r.Query = r.URL.Query()
 	r.PathArgs = re.getUrlValues(mi.Route.Url, r.URL.Path)
 	if mi.Router.Subdomain != "" {
-		for k, w := range re.getSubdomainValues(mi.Router.Subdomain, r.URL.Host) {
-			r.PathArgs[k] = w
-		}
+		maps.Copy(r.PathArgs, re.getSubdomainValues(mi.Router.Subdomain, r.URL.Host))
 	}
 
 	head := r.Header
