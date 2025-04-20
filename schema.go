@@ -123,7 +123,7 @@ func MountSchemaFromRequest(f *c3po.Fielder, rq *Request) c3po.Schema {
 	if len(errs) > 0 {
 		if f.Name != "" {
 			return &reqSchema{
-				errors: []error{fmt.Errorf(`{"%s":%v}`, f.Name, formatErr(errs...))},
+				errors: []error{fmt.Errorf(`{'%s':%v}`, f.Name, formatErr(errs...))},
 			}
 		}
 		return &reqSchema{errors: []error{formatErr(errs...)}}

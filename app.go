@@ -442,7 +442,6 @@ example:
 */
 func (app *App) Build(addr ...string) {
 	app.setEnv()
-
 	app.Env = allowEnv[app.Env]
 	l = newLogger(app.LogFile)
 	app.parseApp()
