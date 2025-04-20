@@ -503,7 +503,6 @@ func (app *App) match(ctx *Ctx) {
 			ctx.NotFound()
 		}
 	}
-
 	for _, router := range app.routers {
 		if router.match(ctx) {
 			if router.StrictSlash && !strings.HasSuffix(rq.URL.Path, "/") {
@@ -516,6 +515,9 @@ func (app *App) match(ctx *Ctx) {
 			return
 		}
 	}
+	fmt.Println(rq.Host)
+	fmt.Println(rq.URL.Path)
+
 	mi := ctx.MatchInfo
 	if mi.MethodNotAllowed != nil {
 		ctx.MethodNotAllowed()
@@ -525,11 +527,7 @@ func (app *App) match(ctx *Ctx) {
 
 // exec route and handle errors of application
 func (app *App) execRoute(ctx *Ctx) {
-	fmt.Println(ctx.Request.Host)
-	fmt.Println(ctx.Request.URL.Host)
-	fmt.Println(ctx.Request.Header.Get("Host"))
 	app.match(ctx)
-
 	rq := ctx.Request
 	mi := ctx.MatchInfo
 
