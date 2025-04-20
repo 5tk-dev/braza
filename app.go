@@ -239,11 +239,11 @@ func (app *App) logStarterListener() {
 		}
 		l.info.Printf("          listening on: http://%s:%s", addr, port)
 	}
-	if envDev {
-		if app.Servername != "" {
-			l.info.Printf("          setting the servername to '%s'", app.Servername)
-		}
+	// if envDev {
+	if app.Servername != "" {
+		l.info.Printf("          setting servername: '%s'", app.Servername)
 	}
+	// }
 }
 
 /*
@@ -268,7 +268,6 @@ func (app *App) parseSrvApp(addr string) {
 
 func runSrv(app *App, privKey, pubKey string, host ...string) (err error) {
 	app.Build(host...)
-
 	var reboot = make(chan bool)
 	var srvErr = make(chan error)
 
