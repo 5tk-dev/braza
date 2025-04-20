@@ -525,6 +525,9 @@ func (app *App) match(ctx *Ctx) {
 
 // exec route and handle errors of application
 func (app *App) execRoute(ctx *Ctx) {
+	fmt.Println(ctx.Request.Host)
+	fmt.Println(ctx.Request.URL.Host)
+	fmt.Println(ctx.Request.Header.Get("Host"))
 	app.match(ctx)
 
 	rq := ctx.Request
