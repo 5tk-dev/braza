@@ -84,7 +84,9 @@ func (r *Router) parseRoute(route *Route) {
 }
 
 func (r *Router) parse(servername string) {
-	r.routesByName = map[string]*Route{}         // reset
+	if r.routesByName == nil {
+		r.routesByName = map[string]*Route{}
+	}
 	r.subdomainRegex = make([]*regexp.Regexp, 0) // reset
 
 	if r.Name == "" && !r.main {
