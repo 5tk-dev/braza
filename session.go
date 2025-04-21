@@ -27,10 +27,6 @@ func (s *Session) validate(c *http.Cookie, ctx *Ctx) {
 	if secret == "" && pubKey == nil && privKey == nil {
 		return
 	}
-
-	fmt.Println(c)
-	fmt.Println(secret)
-
 	s.claims = jwt.MapClaims{}
 
 	var (
@@ -47,12 +43,13 @@ func (s *Session) validate(c *http.Cookie, ctx *Ctx) {
 	if err != nil {
 		return
 	}
-
+	fmt.Println("1")
 	if claims, ok := tkn.Claims.(jwt.MapClaims); ok && tkn.Valid {
 		s.claims = claims
 		if p, ok := claims["_permanent"]; ok && p == "true" {
 			s.Permanent = true
 		}
+		fmt.Println(s.claims)
 	}
 }
 
