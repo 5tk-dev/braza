@@ -2,7 +2,6 @@ package braza
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -34,29 +33,20 @@ func (s *Session) validate(c *http.Cookie, ctx *Ctx) {
 		err error
 	)
 
-	fmt.Println("privKey: ", privKey)
-	fmt.Println("pubKey: ", pubKey)
-	fmt.Println("secret: ", secret)
-
 	if privKey == nil {
 		tkn, err = jwt.Parse(c.Value, func(t *jwt.Token) (any, error) { return []byte(secret), nil })
-		fmt.Println("1", err)
 	} else {
 		tkn, err = jwt.Parse(c.Value, func(t *jwt.Token) (any, error) { return pubKey, nil })
-		fmt.Println("2", err)
 	}
 
 	if err != nil {
-		fmt.Println(err)
 		return
 	}
-	fmt.Println("1")
 	if claims, ok := tkn.Claims.(jwt.MapClaims); ok && tkn.Valid {
 		s.claims = claims
 		if p, ok := claims["_permanent"]; ok && p == "true" {
 			s.Permanent = true
 		}
-		fmt.Println(s.claims)
 	}
 }
 
