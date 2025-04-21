@@ -41,6 +41,7 @@ func (s *Session) validate(c *http.Cookie, ctx *Ctx) {
 	}
 
 	if err != nil {
+		fmt.Println(err)
 		return
 	}
 	fmt.Println("1")
