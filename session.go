@@ -2,6 +2,7 @@ package braza
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -51,6 +52,7 @@ func (s *Session) Set(key, value string) {
 
 // Returns a session value based on the key. If key does not exist, returns an empty string
 func (s *Session) Get(key string) string {
+	fmt.Println(s.claims)
 	if v, ok := s.claims[key]; ok {
 		return v.(string)
 	}
