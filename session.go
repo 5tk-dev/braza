@@ -39,7 +39,7 @@ func (s *Session) validate(c *http.Cookie, ctx *Ctx) {
 	fmt.Println("secret: ", secret)
 
 	if privKey == nil {
-		tkn, err = jwt.Parse(c.Value, func(t *jwt.Token) (any, error) { return secret, nil })
+		tkn, err = jwt.Parse(c.Value, func(t *jwt.Token) (any, error) { return []byte(secret), nil })
 		fmt.Println("1", err)
 	} else {
 		tkn, err = jwt.Parse(c.Value, func(t *jwt.Token) (any, error) { return pubKey, nil })
