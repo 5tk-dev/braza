@@ -2,6 +2,7 @@ package braza
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -23,11 +24,26 @@ func (s *Session) validate(c *http.Cookie, ctx *Ctx) {
 	pubKey := ctx.App.SessionPublicKey
 	privKey := ctx.App.SessionPrivateKey
 
-	s.claims = jwt.MapClaims{}
 	if secret == "" && pubKey == nil && privKey == nil {
 		return
 	}
-	tkn, err := jwt.Parse(c.Value, func(t *jwt.Token) (interface{}, error) { return pubKey, nil })
+
+	fmt.Println(c)
+	fmt.Println(secret)
+
+	s.claims = jwt.MapClaims{}
+
+	var (
+		tkn *jwt.Token
+		err error
+	)
+
+	if privKey == nil {
+		tkn, err = jwt.Parse(c.Value, func(t *jwt.Token) (any, error) { return secret, nil })
+	} else {
+		tkn, err = jwt.Parse(c.Value, func(t *jwt.Token) (any, error) { return pubKey, nil })
+	}
+
 	if err != nil {
 		return
 	}
