@@ -482,6 +482,9 @@ func (app *App) match(ctx *Ctx) {
 	}
 	for _, router := range app.routers {
 		if router.match(ctx) {
+			if ctx.MatchInfo.MethodNotAllowed != nil {
+				l.warn.Printf("url match err : Method Not Allowed")
+			}
 			if router.StrictSlash && !strings.HasSuffix(rq.URL.Path, "/") {
 				args := []string{}
 				for k, v := range rq.PathArgs {
@@ -587,8 +590,7 @@ func (app *App) UrlFor(name string, external bool, args ...string) string {
 	router = route.router
 
 	params := map[string]string{}
-	c := len(args)
-	for i := 0; i < c; i++ {
+	for i := range len(args) {
 		if i%2 != 0 {
 			continue
 		}

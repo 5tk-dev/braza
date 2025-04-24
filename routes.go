@@ -324,6 +324,7 @@ func (r *Route) match(ctx *Ctx) bool {
 	if !r.matchURL(ctx, url) {
 		return false
 	}
+
 	if m == "HEAD" {
 		m = "GET"
 	}
@@ -336,11 +337,16 @@ func (r *Route) match(ctx *Ctx) bool {
 		mi.Match = true
 		mi.Route = r
 		ctx.SchemaFielder = meth.SchemaFielder
+		if mi.methodNotAllowedRoute != nil && !ctx.App.DisableWarnOn405 {
+			l.warn.Printf("URL matching with status 405 in %q, try next routes", mi.methodNotAllowedRoute.Name)
+		}
 		return true
 	}
 
 	mi.Route = nil
 	mi.MethodNotAllowed = ErrorMethodMismatch
+	mi.methodNotAllowedRoute = r
+
 	return false
 }
 
@@ -350,7 +356,7 @@ func (r *Route) mountURI(args ...string) string {
 	)
 
 	c := len(args)
-	for i := 0; i < c; i++ {
+	for i := range c {
 		if i%2 != 0 {
 			continue
 		}
@@ -381,6 +387,7 @@ func (r *Route) mountURI(args ...string) string {
 	// Build Query
 	var query strings.Builder
 	if len(params) > 0 {
+		fmt.Println(params)
 		urlBuf.WriteString("?")
 		for k, v := range params {
 			query.WriteString(k + "=" + v + "&")

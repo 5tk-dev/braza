@@ -45,8 +45,9 @@ type Config struct {
 	StaticUrlPath           string           // url uf request static file (default '/assets')
 	DisableStatic           bool             // disable static endpoint for serving static files (default false)
 	Silent                  bool             // don't print logs (default false)
-	LogFile                 string           // save log info in file (default '')
-	DisableFileWatcher      bool             // disable autoreload in dev mode (default false)
+	DisableWarnOn405        bool
+	LogFile                 string // save log info in file (default '')
+	DisableFileWatcher      bool   // disable autoreload in dev mode (default false)
 
 	SessionExpires          time.Duration `validate:"-"` // (default 30 minutes)
 	SessionPermanentExpires time.Duration `validate:"-"` // (default 31 days)
