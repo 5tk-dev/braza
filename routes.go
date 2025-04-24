@@ -351,9 +351,7 @@ func (r *Route) match(ctx *Ctx) bool {
 }
 
 func (r *Route) mountURI(args ...string) string {
-	var (
-		params = map[string]string{}
-	)
+	params := map[string]string{}
 
 	for i := range len(args) {
 		if i%2 == 0 {
