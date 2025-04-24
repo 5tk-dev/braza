@@ -591,10 +591,9 @@ func (app *App) UrlFor(name string, external bool, args ...string) string {
 
 	params := map[string]string{}
 	for i := range len(args) {
-		if i%2 != 0 {
-			continue
+		if i%2 == 0 {
+			params[args[i]] = args[i+1]
 		}
-		params[args[i]] = args[i+1]
 	}
 
 	// Build Host

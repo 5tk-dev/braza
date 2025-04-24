@@ -355,12 +355,10 @@ func (r *Route) mountURI(args ...string) string {
 		params = map[string]string{}
 	)
 
-	c := len(args)
-	for i := range c {
-		if i%2 != 0 {
-			continue
+	for i := range len(args) {
+		if i%2 == 0 {
+			params[args[i]] = args[i+1]
 		}
-		params[args[i]] = args[i+1]
 	}
 
 	// Pre Build
@@ -387,7 +385,6 @@ func (r *Route) mountURI(args ...string) string {
 	// Build Query
 	var query strings.Builder
 	if len(params) > 0 {
-		fmt.Println(params)
 		urlBuf.WriteString("?")
 		for k, v := range params {
 			query.WriteString(k + "=" + v + "&")
