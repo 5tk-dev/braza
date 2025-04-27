@@ -1,3 +1,5 @@
+5tk.dev/c3po v0.1.0 h1:vaA55YbKWNcuTtn/HYF6NAi8ZJP5HuUiHYMijgpg9XI=
+5tk.dev/c3po v0.1.0/go.mod h1:LMbMSkdhmQedb1LCAEVvzzYnDo52g+B71G13nwQI+c4=
 github.com/golang-jwt/jwt/v5 v5.2.2 h1:Rl4B7itRWVtYIHFrSNd7vhTiz9UpLdi6gZhZ3wEeDy8=
 github.com/golang-jwt/jwt/v5 v5.2.2/go.mod h1:pqrtFR0X4osieyHYxtmOUWsAWrfe1Q5UVIyoH402zdk=
 github.com/gorilla/websocket v1.5.3 h1:saDtZ6Pbx/0u+bgYQ3q96pZgCzfhKXGPqt7kZ72aNNg=
