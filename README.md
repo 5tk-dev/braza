@@ -1,7 +1,6 @@
 # braza
 
 
-
 ## [See the Documentation](https://github.com/5tkgarage/braza/blob/main/docs)
 
 ## Features

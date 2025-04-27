@@ -17,7 +17,10 @@ var rvp = httputil.ReverseProxy{
 }
 
 func main() {
-	app := braza.NewApp(nil)
+	app := braza.NewApp(&braza.Config{
+		DisableStatic:        true, // disble static handler
+		DisableParseFormBody: true, //disables form parser
+	})
 
 	app.AddRoute(&braza.Route{
 		Name: "proxy",
