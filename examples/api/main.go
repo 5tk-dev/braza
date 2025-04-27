@@ -2,9 +2,19 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"5tk.dev/braza"
 )
+
+type SchemaPost struct {
+	Item string
+}
+
+type SchemaPutDel struct {
+	Id   int `braza:"in=path"`
+	Item string
+}
 
 var db = map[string]string{}
 
@@ -21,12 +31,34 @@ func main() {
 	}
 
 	app.GET("/todo", get)
-	app.POST("/todo", post)
 
-	app.PUT("/todo/{id:int}", put)
-	app.DELETE("/todo/{id:int}", del)
+	app.AddRoute(
+		&braza.Route{
+			Url: "/todo",
+			// Name:    "post", // if omit, name set function name. ex: post
+			Func:    post,
+			Methods: []string{"POST"},
+			Schema:  &SchemaPost{},
+		},
+	)
 
-	app.Listen()
+	app.AddRoute(&braza.Route{
+		Url:  "/todo/{id:int}",
+		Name: "todos",
+		MapCtrl: braza.MapCtrl{
+			"PUT": &braza.Meth{
+				Func:   put,
+				Schema: &SchemaPutDel{},
+			},
+			"DELETE": &braza.Meth{
+				Func:   del,
+				Schema: &SchemaPutDel{},
+			},
+		},
+	})
+
+	app.ShowRoutes() // can also be accessed by "go run . -routes"
+	log.Fatal(app.Listen())
 }
 
 func get(ctx *braza.Ctx) {
@@ -39,7 +71,7 @@ func post(ctx *braza.Ctx) {
 		ctx.BadRequest()
 	}
 	db[fmt.Sprint(len(db))] = item
-	ctx.JSON(db, 200)
+	ctx.JSON(db, 201)
 }
 
 func put(ctx *braza.Ctx) {
