@@ -2,24 +2,24 @@
 
 
 
-## [See the Documentation](https://github.com/5tkgarage/braza/blob/main/docs/doc.md)
+## [See the Documentation](https://github.com/5tkgarage/braza/blob/main/docs)
 
 ## Features
-    - File Watcher (in development mode)
+    - File Watcher (hot reload)
     - Error management
-    - Router
-    - Schema Validator (converts the form into a Struct - c3po package)
+    - Routers
+    - Schema Validator (with c3po package)
     - Rendering built-in (template/html)
     - Endpoints
     - Implements net/http
     
     - Supports
-        Jwt 
-        Cors 
-        Sessions
-        Websocket
-        Middleware & Next
-        URL Route builder
+        - Jwt 
+        - Cors 
+        - Sessions
+        - Websocket
+        - Middleware & Next
+        - URL Route builder
 
 ## Simple Example
 
@@ -52,13 +52,13 @@ func helloWorld(ctx *braza.Ctx) {
 
 func helloUser(ctx *braza.Ctx) {
  rq := ctx.Request   // current Request
- name := rq.Args["name"]
+ name := rq.PathArgs["name"]
  ctx.HTML("<h1>Hello "+name+"</h1>", 200)
 }
 
 func userByID(ctx *braza.Ctx) {
  rq := ctx.Request   // current Request
- id := rq.Args["userID"]
+ id := rq.PathArgs["userID"]
  user := AnyQuery(id)
  ctx.JSON(user, 200)
 }
