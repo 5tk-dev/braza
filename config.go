@@ -6,9 +6,9 @@ import (
 	"html/template"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
-	"5tk.dev/c3po"
 	"github.com/gorilla/websocket"
 	"gopkg.in/yaml.v3"
 )
@@ -33,30 +33,30 @@ func NewConfig() *Config                    { return &Config{} }
 func NewConfigFromFile(file string) *Config { c := &Config{}; c.SetupFromFile(file); return c }
 
 type Config struct {
-	Env                     string           // environmnt (default 'development')
-	SecretKey               string           // for sign session (default '')
-	Servername              string           // for build url routes and route match (default '')
-	ListeningInTLS          bool             // UrlFor return a URl with schema in "https:" (default 'false')
-	TemplateFolder          string           // for render Templates Html. Default "templates/"
-	TemplateFuncs           template.FuncMap `validate:"-"`
-	DisableParseFormBody    bool             // Disable default parse of Request.Form -> if true, use Request.ParseForm()
-	DisableTemplateReloader bool             // if app in dev mode, disable template's reload (default false)
-	StaticFolder            string           // for serve static files (default '/assets')
-	StaticUrlPath           string           // url uf request static file (default '/assets')
-	DisableStatic           bool             // disable static endpoint for serving static files (default false)
-	Silent                  bool             // don't print logs (default false)
-	DisableWarnOn405        bool
+	Env                     string // environmnt (default 'development')
+	Silent                  bool   // don't print logs (default false)
 	LogFile                 string // save log info in file (default '')
-	DisableFileWatcher      bool   // disable autoreload in dev mode (default false)
+	SecretKey               string // for sign session (default '')
+	Servername              string // for build url routes and route match (default '')
+	ListeningInTLS          bool   // UrlFor return a URl with schema in "https:" (default 'false')
+	TemplateFolder          string // for render Templates Html. Default "templates/"
+	DisableParseFormBody    bool   // Disable default parse of Request.Form -> if true, use Request.ParseForm()
+	DisableTemplateReloader bool   // if app in dev mode, disable template's reload (default false)
+	StaticFolder            string // for serve static files (default '/assets')
+	StaticUrlPath           string // url uf request static file (default '/assets')
+	DisableStatic           bool   // disable static endpoint for serving static files (default false)
+	DisableWarnOn405        bool
+	DisableFileWatcher      bool // disable autoreload in dev mode (default false)
 
-	SessionName             string        `validate:"-"` // (default _session)
-	SessionExpires          time.Duration `validate:"-"` // (default 30 minutes)
-	SessionPermanentExpires time.Duration `validate:"-"` // (default 31 days)
+	SessionName             string        // (default _session)
+	SessionExpires          time.Duration // (default 30 minutes)
+	SessionPermanentExpires time.Duration // (default 31 days)
 
 	SessionPublicKey  *rsa.PublicKey  `validate:"-"`
 	SessionPrivateKey *rsa.PrivateKey `validate:"-"`
 
 	EnableDocFull bool
+	TemplateFuncs template.FuncMap `validate:"-"`
 
 	serverport        string
 	hostname          string
@@ -96,6 +96,8 @@ func (c *Config) checkConfig() {
 }
 
 // setup config from json, yalm
+// accept field types: string, int, float & bool
+// todo: c3po parser
 func (c *Config) SetupFromFile(filename string) error {
 	f, err := os.ReadFile(filename)
 	if err != nil {
@@ -107,12 +109,11 @@ func (c *Config) SetupFromFile(filename string) error {
 		if err := json.Unmarshal(f, c); err != nil {
 			return err
 		}
-	case ".yml":
-		var d any
-		if err := yaml.Unmarshal(f, &d); err != nil {
+	case ".yaml":
+		str := strings.ToLower(string(f))
+		if err := yaml.Unmarshal([]byte(str), &c); err != nil {
 			return err
 		}
-		c3po.UnmarshalValidate(c, d)
 	}
 	c.checkConfig()
 	return nil

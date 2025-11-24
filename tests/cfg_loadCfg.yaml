@@ -1,0 +1,16 @@
+env: test
+silent: true
+logFile: test.log
+secretKey: supersecret
+servername: localhost
+staticfolder: front/static
+enableDocFull: true
+staticUrlPath: /cdn
+listeningInTLS: true
+templateFolder: front/html
+disableStatic: true
+disableWarnOn405: true
+disableFileWatcher: true
+disableParseFormBody: true
+disableTemplateReloader: true
+sessionName: foo
