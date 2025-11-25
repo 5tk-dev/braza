@@ -1,8 +1,5 @@
 # braza
 
-
-## [See the Documentation](https://github.com/5tkgarage/braza/blob/main/docs)
-
 ## Features
     - File Watcher (hot reload)
     - Error management & custom response errors
@@ -18,6 +15,8 @@
         - Sessions
         - Middlewars
         - URL Route builder
+
+## [See Full Examples Here](https://github.com/5tk-dev/braza_examples)
 
 ## Simple Example
 
