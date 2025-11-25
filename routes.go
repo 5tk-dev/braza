@@ -60,7 +60,6 @@ type RouteConfig struct {
 	//		[]Func{	GetUser, HasAUth,...
 	Middlewares []Func
 
-	Doc     *Doc
 	OmitDoc bool
 }
 
