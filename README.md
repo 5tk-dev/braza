@@ -5,19 +5,18 @@
 
 ## Features
     - File Watcher (hot reload)
-    - Error management
-    - Routers
+    - Error management & custom response errors
+    - Dynamic route paths & subdomains
     - Schema Validator (with c3po package)
     - Rendering built-in (template/html)
-    - Endpoints
     - Implements net/http
-    
+    - ...
+
     - Supports
         - Jwt 
         - Cors 
         - Sessions
-        - Websocket
-        - Middleware & Next
+        - Middlewars
         - URL Route builder
 
 ## Simple Example
