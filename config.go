@@ -9,7 +9,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gorilla/websocket"
 	"gopkg.in/yaml.v3"
 )
 
@@ -58,9 +57,8 @@ type Config struct {
 	EnableDocFull bool
 	TemplateFuncs template.FuncMap `validate:"-"`
 
-	serverport        string
-	hostname          string
-	defaultWsUpgrader *websocket.Upgrader
+	serverport string
+	hostname   string
 }
 
 func (c *Config) checkConfig() {
@@ -81,17 +79,14 @@ func (c *Config) checkConfig() {
 			c.StaticUrlPath = "/assets"
 		}
 	}
+	if c.SessionName == "" {
+		c.SessionName = "_session"
+	}
 	if c.SessionExpires == 0 {
 		c.SessionExpires = time.Minute * 30
 	}
 	if c.SessionPermanentExpires == 0 {
 		c.SessionPermanentExpires = time.Hour * 744
-	}
-	if c.defaultWsUpgrader == nil {
-		c.defaultWsUpgrader = &websocket.Upgrader{
-			ReadBufferSize:  1024,
-			WriteBufferSize: 1024,
-		}
 	}
 }
 

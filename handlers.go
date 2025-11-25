@@ -61,18 +61,18 @@ func req500(ctx *Ctx) {
 		ctx.raw.WriteHeader(500)
 		fmt.Fprint(ctx.raw, statusText)
 	}
+
 }
 
 func reqOK(ctx *Ctx) {
 	mi := ctx.MatchInfo
-	rsp := ctx.Response
 	if mi.Match {
 		if ctx.Session.changed {
-			rsp.SetCookie(ctx.Session.save(ctx))
+			ctx.SetCookie(ctx.Session.save(ctx))
 		}
-		rsp.parseHeaders()
-		SetHeader(rsp.raw, rsp.header)
+		ctx.parseHeaders()
+		SetHeader(ctx.raw, ctx.header)
 	}
-	rsp.raw.WriteHeader(rsp.StatusCode)
-	fmt.Fprint(rsp.raw, rsp.String())
+	ctx.raw.WriteHeader(ctx.StatusCode)
+	fmt.Fprint(ctx.raw, ctx.String())
 }

@@ -52,6 +52,9 @@ func (app *App) parseSrvApp(addr string) {
 }
 
 func runSrv(app *App, opt *ServeOptions) (err error) {
+	if opt == nil {
+		opt = &ServeOptions{}
+	}
 	app.Build(opt.Host)
 	if listRouteSch != "" {
 		showRouteSchema(app, listRouteSch)
@@ -167,28 +170,23 @@ func (app *App) execHandlerError(ctx *Ctx, code int) {
 }
 
 func (app *App) closeConn(ctx *Ctx) {
-	err := recover()
-	defer execTeardown(ctx)
 	defer req500(ctx)
+	defer execTeardown(ctx)
 
-	rsp := ctx.Response
+	err := recover()
 	if err == nil {
 		reqOK(ctx)
 		return
 	}
+
 	if e, ok := err.(error); ok && errors.Is(ErrHttpAbort, e) {
 		code := ctx.backCtx.Value(abortCode(1))
 		if c, ok := code.(int); ok {
 			app.execHandlerError(ctx, c)
 		}
 		reqOK(ctx)
-	} else {
-		rsp.StatusCode = 500
-		statusText := "500 Internal Server Error"
-		l.Error(err)
-		rsp.raw.WriteHeader(500)
-		fmt.Fprint(rsp.raw, statusText)
 	}
+
 }
 
 // http.Handler

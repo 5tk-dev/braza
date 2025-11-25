@@ -32,7 +32,6 @@ func (s *Session) validate(c *http.Cookie, ctx *Ctx) {
 		tkn *jwt.Token
 		err error
 	)
-
 	if privKey == nil {
 		tkn, err = jwt.Parse(c.Value, func(t *jwt.Token) (any, error) { return []byte(secret), nil })
 	} else {
@@ -42,6 +41,7 @@ func (s *Session) validate(c *http.Cookie, ctx *Ctx) {
 	if err != nil {
 		return
 	}
+
 	if claims, ok := tkn.Claims.(jwt.MapClaims); ok && tkn.Valid {
 		s.claims = claims
 		if p, ok := claims["_permanent"]; ok && p == "true" {
@@ -87,47 +87,47 @@ func (s *Session) save(ctx *Ctx) *http.Cookie {
 	secret := ctx.App.SecretKey
 	pubKey := ctx.App.SessionPublicKey
 	privKey := ctx.App.SessionPrivateKey
+	delete(s.claims, "_permanent")
 
 	if secret == "" && pubKey == nil && privKey == nil {
 		l.warn.Println("to use the session you need to set a 'App.Secret' or a 'public/private key'. rejecting session")
 		return nil
 	}
 
-	delete(s.claims, "_permanent")
-
 	if len(s.claims) == 0 {
 		return &http.Cookie{
-			Name:     "_session",
+			Name:     ctx.App.SessionName,
 			Value:    "",
 			HttpOnly: true,
 			MaxAge:   -1,
 		}
 	}
+
 	var exp time.Time
+
 	if s.Permanent {
 		if s.expiresPermanent.IsZero() {
-			exp = time.Now().Add(time.Hour * 24 * 31)
+			exp = time.Now().Add(ctx.App.SessionPermanentExpires)
 		} else {
 			exp = s.expiresPermanent
 		}
 		s.claims["_permanent"] = true
 	} else {
 		if s.expires.IsZero() {
-			exp = time.Now().Add(time.Hour)
+			exp = time.Now().Add(ctx.App.SessionExpires)
 		} else {
 			exp = s.expires
 		}
 	}
-
 	s.claims["iat"] = time.Now().Unix()
-	s.claims["exp"] = exp
+	s.claims["exp"] = exp.Unix()
 
 	tkn, err := s.GetSign(ctx)
 	if err != nil {
 		l.err.Println(err)
 		return nil
 	}
-	c := &http.Cookie{
+	return &http.Cookie{
 		Name:     ctx.App.SessionName,
 		Value:    tkn,
 		HttpOnly: true,
@@ -135,7 +135,6 @@ func (s *Session) save(ctx *Ctx) *http.Cookie {
 		SameSite: http.SameSiteLaxMode,
 		Secure:   true,
 	}
-	return c
 }
 
 // Returns a JWT Token from session data
@@ -143,6 +142,7 @@ func (s *Session) GetSign(ctx *Ctx) (string, error) {
 	secret := ctx.App.SecretKey
 	pubKey := ctx.App.SessionPublicKey
 	privKey := ctx.App.SessionPrivateKey
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, s.claims)
 	if secret == "" && pubKey == nil && privKey == nil {
 		return "", errors.New("to set a session value, you need a set a 'App.Secret' or a 'public/private key'")

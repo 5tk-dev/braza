@@ -6,8 +6,6 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
-
-	"github.com/gorilla/websocket"
 )
 
 func NewRouter(name string) *Router {
@@ -24,7 +22,6 @@ type Router struct {
 	Routes      []*Route
 	Prefix      string
 	Subdomain   string // only {sub} or {sub:int}
-	WsUpgrader  *websocket.Upgrader
 	Middlewares []Func
 	StrictSlash bool // match only /foo -> /foo & /foo/ -> /foo/
 

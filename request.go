@@ -15,7 +15,6 @@ import (
 
 	"maps"
 
-	"github.com/gorilla/websocket"
 	"gopkg.in/yaml.v3"
 )
 
@@ -137,7 +136,8 @@ func (r *Request) parseCookies() {
 	for _, c := range cs {
 		r.Cookies[c.Name] = c
 	}
-	if c, ok := r.Cookies["_session"]; ok {
+
+	if c, ok := r.Cookies[r.ctx.App.SessionName]; ok {
 		r.ctx.Session.validate(c, r.ctx)
 	}
 }
@@ -278,12 +278,4 @@ func (r *Request) BasicAuth() (username, password string, ok bool) {
 		return r.ctx.App.BasicAuth(r.ctx)
 	}
 	return r.raw.BasicAuth()
-}
-
-func (r *Request) Websocket() (*websocket.Conn, error) {
-	ws := r.ctx.MatchInfo.Router.WsUpgrader
-	if ws == nil {
-		ws = r.ctx.App.defaultWsUpgrader
-	}
-	return ws.Upgrade(r.ctx, r.raw, r.ctx.Header())
 }
